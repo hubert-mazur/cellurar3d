@@ -12,7 +12,9 @@ int main()
     reshapeScreen(window.getSize());
     initOpenGL();
     sf::Vector2i mousePosition(0, 0);
-    
+
+    Cube cube = Cube();
+
     while (running)
     {
         glMatrixMode(GL_MODELVIEW);
@@ -59,5 +61,6 @@ int main()
         }
         drawScene();
         window.display();
+        cube.evolve();
     }
 }
