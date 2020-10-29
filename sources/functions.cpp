@@ -43,12 +43,12 @@ void drawScene()
     {
         for (int j = 0; j < 2; j++)
         {
-            glVertex3f(-0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j, -0.9);
-            glVertex3f(-0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j, 0.9);
-            glVertex3f(-0.9, -0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j);
-            glVertex3f(0.9, -0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j);
-            glVertex3f(-0.9 + 1.8 * (i ^ j), -0.9, -0.9 + 1.8 * j);
-            glVertex3f(-0.9 + 1.8 * (i ^ j), 0.9, -0.9 + 1.8 * j);
+            glVertex3f(-1 + 2 * (i ^ j), -1 + 2 * j, -1);
+            glVertex3f(-1 + 2 * (i ^ j), -1 + 2 * j, 1);
+            glVertex3f(-1, -1 + 2 * (i ^ j), -1 + 2 * j);
+            glVertex3f(1, -1 + 2 * (i ^ j), -1 + 2 * j);
+            glVertex3f(-1 + 2 * (i ^ j), -1, -1 + 2 * j);
+            glVertex3f(-1 + 2 * (i ^ j), 1, -1 + 2 * j);
         }
     }
 
