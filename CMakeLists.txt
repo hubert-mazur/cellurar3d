@@ -1,6 +1,6 @@
 set (OUTPUT_FILE_NAME Lab)
 set (BACKUP_VERSION 0)
-set (COMPILE_FLAGS "-Wall" "-g")
+set (COMPILE_FLAGS "-Wall" "-g" "--pedantic")
 set (DEPENDENCIES "-MMD -MP")
 set (LANG_EXT "cpp")
 cmake_minimum_required(VERSION 3.7.2)

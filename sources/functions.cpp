@@ -1,7 +1,7 @@
 #include "include.h"
 
-static Spherical camera(3.0f, 0.2f, 1.2f);
-static float fieldOfView = 25.0;
+Spherical camera(3.0f, 0.2f, 1.8f);
+float fieldOfView = 45.0;
 
 void reshapeScreen(sf::Vector2u screenSize)
 {
@@ -43,12 +43,12 @@ void drawScene()
     {
         for (int j = 0; j < 2; j++)
         {
-            glVertex3f(-0.3 + 0.6 * (i ^ j), -0.3 + 0.6 * j, -0.3);
-            glVertex3f(-0.3 + 0.6 * (i ^ j), -0.3 + 0.6 * j, 0.3);
-            glVertex3f(-0.3, -0.3 + 0.6 * (i ^ j), -0.3 + 0.6 * j);
-            glVertex3f(0.3, -0.3 + 0.6 * (i ^ j), -0.3 + 0.6 * j);
-            glVertex3f(-0.3 + 0.6 * (i ^ j), -0.3, -0.3 + 0.6 * j);
-            glVertex3f(-0.3 + 0.6 * (i ^ j), 0.3, -0.3 + 0.6 * j);
+            glVertex3f(-0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j, -0.9);
+            glVertex3f(-0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j, 0.9);
+            glVertex3f(-0.9, -0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j);
+            glVertex3f(0.9, -0.9 + 1.8 * (i ^ j), -0.9 + 1.8 * j);
+            glVertex3f(-0.9 + 1.8 * (i ^ j), -0.9, -0.9 + 1.8 * j);
+            glVertex3f(-0.9 + 1.8 * (i ^ j), 0.9, -0.9 + 1.8 * j);
         }
     }
 
