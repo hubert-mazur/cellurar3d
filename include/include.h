@@ -13,6 +13,7 @@
 #include <SFML/OpenGL.hpp>
 
 #include "spherical.h"
+#include "cube.h"
 
 void reshapeScreen(sf::Vector2u screenSize);
 void initOpenGL();

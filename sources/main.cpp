@@ -12,6 +12,7 @@ int main()
     reshapeScreen(window.getSize());
     initOpenGL();
     sf::Vector2i mousePosition(0, 0);
+    
     while (running)
     {
         glMatrixMode(GL_MODELVIEW);

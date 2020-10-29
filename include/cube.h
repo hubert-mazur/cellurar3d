@@ -27,7 +27,6 @@ class Cube
             this->state = state;
         }
 
-
         sf::Vector3f getCoordinates() const { return this->cellCoordinates; }
         unsigned getState() const { return this->state; }
 
@@ -36,6 +35,16 @@ class Cube
         void setX(float x) { this->cellCoordinates.x = x; }
         void setY(float y) { this->cellCoordinates.y = y; }
         void setZ(float z) { this->cellCoordinates.z = z; }
+
+        Cell& operator= (const Cell &object) 
+        {
+            this->cellCoordinates.x = object.cellCoordinates.x;
+            this->cellCoordinates.y = object.cellCoordinates.y;
+            this->cellCoordinates.z = object.cellCoordinates.z;
+            this->state = object.state;
+
+            return *this;
+        }
 
     private:
         sf::Vector3f cellCoordinates;
@@ -48,11 +57,37 @@ public:
         for (int i = 0; i < size; ++i)
             for (int j = 0; j < size; j++)
                 for (int k = 0; k < size; k++)
-                    cube[i][j][k] = Cell(static_cast<float>(i) * 0.01, static_cast<float>(j) * 0.01, static_cast<float>(k) * 0.01);
+                    cube[i][j][k] = new Cell(static_cast<float>(i) * 0.01, static_cast<float>(j) * 0.01, static_cast<float>(k) * 0.01);
+    }
+
+    Cube(const Cube &object)
+    {
+        Cube copy = Cube();
+        for (int i=0;i<size;i++)
+            for (int j=0;j<size;j++)
+                for (int k=0;k<size;k++)
+                    copy.cube[i][j][k] = object.cube[i][j][k];
+    }
+
+    ~Cube()
+    {
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
+                for (int k = 0; k < size; k++)
+                    delete cube[i][j][k];
+    }
+
+
+
+    void evolve()
+    {
+        Cube evolutionaryCube = Cube(*this);
+
+        
     }
 
 private:
-    Cell cube[100][100][100];
+    Cell *cube[100][100][100];
     int size = 100;
 };
 
