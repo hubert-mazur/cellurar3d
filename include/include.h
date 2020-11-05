@@ -14,6 +14,8 @@
 
 #include "spherical.h"
 #include "cube.h"
+#include "rules.h"
+#include "range.h"
 
 void reshapeScreen(sf::Vector2u screenSize);
 void initOpenGL();

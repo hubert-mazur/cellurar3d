@@ -2,6 +2,7 @@
 #define _CUBE_H_
 
 #include <SFML/System.hpp>
+#include "rules.h"
 
 enum State
 {
@@ -52,7 +53,7 @@ class Cube
     };
 
 public:
-    Cube()
+    Cube(Rules rules = Rules()): rules(rules)
     {
         cube = new Cell **[size];
         for (int i = 0; i < size; i++)
@@ -78,6 +79,8 @@ public:
             for (int j = 0; j < size; j++)
                 for (int k = 0; k < size; k++)
                     this->cube[i][j][k] = object.cube[i][j][k];
+
+        this->rules = object.rules;
     };
 
     ~Cube()
@@ -103,12 +106,13 @@ public:
                 for (int k = 0; k < size; k++)
                 {
                     int neighboursCount = 0;
-
                     for (int a = -1; a < 2; a++)
                         for (int b = -1; b < 2; b++)
                             for (int C = -1; C < 2; C++) // :D
                                 if (checkCell(i + a, j + b, k + C))
                                     neighboursCount++;
+                    
+                    
                 }
             }
         }
@@ -117,6 +121,7 @@ public:
 private:
     Cell ***cube;
     int size = 50;
+    Rules rules;
 
     inline bool checkCell(int i, int j, int k)
     {
