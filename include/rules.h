@@ -19,10 +19,11 @@ public:
     void setSurviveRule(Range<> range) { this->survive = survive; }
     void setDeathRule(Range<> range) { this->death = death; }
 
+    int getNeighbourhoodRule() const { return this->neighbourhood; }
     Range<> getBornRule() const { return this->born; }
     Range<> getSurviveRule() const { return this->survive; }
     Range<> getDeathRule() const { return this->death; }
-    
+
 private:
     Range<int> born;
     Range<int> survive;

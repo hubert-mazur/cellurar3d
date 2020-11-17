@@ -1,21 +1,25 @@
 #include "include.h"
-
+#include <unistd.h>
 extern Spherical camera;
 extern float fieldOfView;
+Cube *cube;
+pthread_mutex_t mutex;
+bool running = true;
 
 int main()
 {
-    bool running = true;
     sf::ContextSettings context(16, 0, 0, 4, 5);
     sf::RenderWindow window(sf::VideoMode(800, 600), "Cellurar3d", 7U, context);
     // window.setVerticalSyncEnabled(true);
     reshapeScreen(window.getSize());
     initOpenGL();
     sf::Vector2i mousePosition(0, 0);
-
+    pthread_t thread;
     sf::Clock clck;
 
-    Cube cube = Cube(Rules(Range<>(13,18), Range<>(10,20), Range<>(6,23)));
+    cube = new Cube(Rules(Range<>(3,14), Range<>(9,18), Range<>(6,23)));
+    cube->initRandomData();
+
 
     while (running)
     {
@@ -65,10 +69,18 @@ int main()
 
         drawScene();
         window.display();
-        cube.evolve();
+        Cube * tmp;
+        tmp = cube;
+        cube = cube->evolve();
+        tmp->~Cube();
+
+        // pthread_create(&thread, NULL, Roll, NULL);
 
         float currentTime = clck.restart().asSeconds();
         float fps = 1.f / (currentTime);
-        std::cout << fps << std::endl;
+        // std::cout << fps << std::endl;
+        // sleep(1);
     }
+    cube->~Cube();
+    // pthread_join(thread, NULL);
 }

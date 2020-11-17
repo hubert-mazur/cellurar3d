@@ -2,6 +2,11 @@
 
 Spherical camera(3.0f, 0.2f, 1.8f);
 float fieldOfView = 45.0;
+extern Cube *cube;
+extern bool running;
+extern pthread_mutex_t mutex;
+
+sf::Shader shader;
 
 void reshapeScreen(sf::Vector2u screenSize)
 {
@@ -23,6 +28,7 @@ void initOpenGL()
     glEnable(GL_LIGHT0);
     glEnable(GL_NORMALIZE);
     glEnable(GL_COLOR_MATERIAL);
+    shader.loadFromFile("shader.vert", "shader.frag");
 }
 
 void drawScene()
@@ -52,6 +58,56 @@ void drawScene()
         }
     }
 
+    GLUquadricObj *qobj = gluNewQuadric();
+    gluQuadricDrawStyle(qobj, GLU_FILL);
+    gluQuadricNormals(qobj, GLU_SMOOTH);
+
+    glEnable(GL_SHADER);
+    // sf::Shader::bind(&shader);
+    pthread_mutex_lock(&mutex);
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            for (int k = 0; k < 10; k++)
+            {
+                int state = cube->getCube()[i][j][k].getState();
+                if (state == 0)
+                    continue;
+
+                glPushMatrix();
+                glColor3f(1 + (state * 0.01), 1 - (state * 0.01), 0.0);
+
+                glTranslatef(float(i) / 20, float(j) / 20, float(k) / 20);
+                gluSphere(qobj, 0.02, 5, 2);
+                glPopMatrix();
+            }
+        }
+    }
+
+    pthread_mutex_unlock(&mutex);
+
+    // sf::Shader::bind(NULL);
+    glDisable(GL_SHADER);
     glEnd();
     glFlush();
+}
+
+void *Roll(void *)
+{
+    while (running)
+    {
+        Cube *tmp, *cube_backup;
+
+        tmp = cube->evolve();
+        cube_backup = cube;
+
+        pthread_mutex_lock(&mutex);
+        cube = tmp;
+        pthread_mutex_unlock(&mutex);
+
+        // cube_backup->~Cube();
+    }
+    return NULL;
 }

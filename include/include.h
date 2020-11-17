@@ -20,7 +20,7 @@
 void reshapeScreen(sf::Vector2u screenSize);
 void initOpenGL();
 void drawScene();
-
+void* Roll(void*);
 
 
 #endif

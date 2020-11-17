@@ -4,23 +4,14 @@
 #include <SFML/System.hpp>
 #include "rules.h"
 
-enum State
-{
-    Excellent = 4,
-    Good = 3,
-    Sick = 2,
-    Agony = 1,
-    Dead = 0
-};
-
 class Cube
 {
     class Cell final
     {
 
     public:
-        Cell(sf::Vector3f coordinates, unsigned state = Dead) : cellCoordinates(coordinates), state(state){};
-        Cell(float x = 0.0, float y = 0.0, float z = 0.0, unsigned state = Dead)
+        Cell(sf::Vector3f coordinates, unsigned state = 50) : cellCoordinates(coordinates), state(state){};
+        Cell(float x = 0.0, float y = 0.0, float z = 0.0, unsigned state = 0)
         {
             this->cellCoordinates.x = x;
             this->cellCoordinates.y = y;
@@ -43,7 +34,6 @@ class Cube
             this->cellCoordinates.y = object.cellCoordinates.y;
             this->cellCoordinates.z = object.cellCoordinates.z;
             this->state = object.state;
-
             return *this;
         }
 
@@ -53,7 +43,7 @@ class Cube
     };
 
 public:
-    Cube(Rules rules = Rules()): rules(rules)
+    Cube(Rules rules = Rules()) : rules(rules)
     {
         cube = new Cell **[size];
         for (int i = 0; i < size; i++)
@@ -73,7 +63,7 @@ public:
                 }
     }
 
-    Cube(const Cube &object): Cube()
+    Cube(const Cube &object) : Cube()
     {
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
@@ -89,16 +79,16 @@ public:
         {
             for (int j = 0; j < size; j++)
                 delete[] cube[i][j];
-            delete [] cube[i];
+            delete[] cube[i];
         }
 
-        delete [] cube;
+        delete[] cube;
     }
 
-    void evolve()
+    Cube *evolve()
     {
-        Cube evolutionaryCube = Cube(*this);
-
+        Cube *evolutionaryCube = new Cube(*this);
+        // Cube *evolutionaryCub = new Cube(*this);
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -106,21 +96,63 @@ public:
                 for (int k = 0; k < size; k++)
                 {
                     int neighboursCount = 0;
-                    for (int a = -1; a < 2; a++)
-                        for (int b = -1; b < 2; b++)
-                            for (int C = -1; C < 2; C++) // :D
-                                if (checkCell(i + a, j + b, k + C))
-                                    neighboursCount++;
-                    
-                    
+                    int state = this->cube[i][j][k].getState();
+                    if (this->rules.getNeighbourhoodRule() == Moore)
+                    {
+                        for (int a = -1; a < 2; a++)
+                            for (int b = -1; b < 2; b++)
+                                for (int C = -1; C < 2; C++) // :D
+                                    neighboursCount += checkCell(i + a, j + b, k + C);
+                    }
+                    else
+                    {
+                        for (int a = -1; a < 2; a++)
+                            for (int b = -1; b < 2; b++)
+                                neighboursCount += checkCell(i + a, j + b, k);
+                    }
+
+                    // subtract cell itself from neighbours count
+                    neighboursCount -= 1;
+
+                    if (state == 0 && this->rules.getBornRule()(neighboursCount))
+                    {
+                        evolutionaryCube->cube[i][j][k].setState(10);
+                    }
+                    else if (state != 0)
+                    {
+                        if (!this->rules.getSurviveRule()(neighboursCount) && ((state - 1) >= 0))
+                        {
+                            evolutionaryCube->cube[i][j][k].setState(state - 1);
+                        }
+
+                        else
+                        {
+                            if (state <= 100)
+                            {
+                                evolutionaryCube->cube[i][j][k].setState(state + 1);
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        return evolutionaryCube;
     }
+
+    void initRandomData()
+    {
+        for (int i = 0; i < 5; i++)
+            for (int j = 0; j < 5; j++)
+                for (int k = 0; k < 5; k++)
+                    this->cube[i][j][k].setState(1);
+    }
+
+    Cell ***getCube() const { return this->cube; }
 
 private:
     Cell ***cube;
-    int size = 50;
+    int size = 10;
     Rules rules;
 
     inline bool checkCell(int i, int j, int k)
@@ -128,7 +160,7 @@ private:
         if ((i < 0 || i >= size) || (j < 0 || j >= size) || (k < 0 || k >= size))
             return false;
 
-        if (cube[i][j][k].getState() != Dead)
+        if (cube[i][j][k].getState() != 0)
             return true;
 
         return false;

@@ -38,7 +38,7 @@ add_executable(${OUTPUT_FILE_NAME} ${SOURCES})
 add_custom_target (run ./${OUTPUT_FILE_NAME} ${LAB_NUMBER})
 add_custom_target (memcheck @valgrind ./${OUTPUT_FILE_NAME})
 
-target_link_libraries(${OUTPUT_FILE_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} sfml-graphics sfml-window sfml-system )
+target_link_libraries(${OUTPUT_FILE_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} sfml-graphics sfml-window sfml-system -lpthread )
 ############################################################
 
 ############################################################
