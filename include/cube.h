@@ -21,12 +21,14 @@ class Cube
 
         sf::Vector3f getCoordinates() const { return this->cellCoordinates; }
         unsigned getState() const { return this->state; }
+        int getNeighboursCount() const { return this->neighboursCount; }
 
         void setState(unsigned state) { this->state = state; }
         void setCoordinates(sf::Vector3f coordinates) { this->cellCoordinates = coordinates; }
         void setX(float x) { this->cellCoordinates.x = x; }
         void setY(float y) { this->cellCoordinates.y = y; }
         void setZ(float z) { this->cellCoordinates.z = z; }
+        void setNeighboursCount(int count) { this->neighboursCount = count; }
 
         Cell &operator=(const Cell &object)
         {
@@ -40,6 +42,7 @@ class Cube
     private:
         sf::Vector3f cellCoordinates;
         unsigned state;
+        int neighboursCount = 0;
     };
 
 public:
@@ -114,24 +117,13 @@ public:
                     // subtract cell itself from neighbours count
                     neighboursCount -= 1;
 
-                    if (state == 0 && this->rules.getBornRule()(neighboursCount))
-                    {
-                        evolutionaryCube->cube[i][j][k].setState(10);
-                    }
-                    else if (state != 0)
-                    {
-                        if (!this->rules.getSurviveRule()(neighboursCount) && ((state - 1) >= 0))
-                        {
-                            evolutionaryCube->cube[i][j][k].setState(state - 1);
-                        }
+                    this->cube[i][j][k].setNeighboursCount(neighboursCount);
 
-                        else
-                        {
-                            if (state <= 100)
-                            {
-                                evolutionaryCube->cube[i][j][k].setState(state + 1);
-                            }
-                        }
+                    if (state == 0 && this->rules.getBornRule()(neighboursCount))
+                        evolutionaryCube->cube[i][j][k].setState(100);
+                    else if (state != 0 && !this->rules.getSurviveRule()(neighboursCount))
+                    {
+                        evolutionaryCube->cube[i][j][k].setState(0);
                     }
                 }
             }
@@ -142,18 +134,38 @@ public:
 
     void initRandomData()
     {
-        for (int i = 0; i < 5; i++)
-            for (int j = 0; j < 5; j++)
-                for (int k = 0; k < 5; k++)
-                    this->cube[i][j][k].setState(1);
+        int begin = 0, end;
+        begin = random() % 30;
+
+        for (int rounds = 0; rounds < 30; rounds++)
+        {
+            end = random() % (30 - begin) + begin;
+            std::cout << "From: " << begin << ", to: " << end << std::endl;
+            for (int i = begin; i < end; i++)
+            {
+                begin = random() % 30;
+                end = random() % (30 - begin) + begin;
+
+                for (int j = begin; j < end; j++)
+                {
+                    begin = random() % 30;
+                    end = random() % (30 - begin) + begin;
+                    for (int k = begin; k < end; k++)
+                    {
+                        if (random() % 100 < 20)
+                            this->cube[i][j][k].setState(100);
+                    }
+                }
+            }
+        }
     }
 
     Cell ***getCube() const { return this->cube; }
+    Rules rules;
 
 private:
     Cell ***cube;
-    int size = 10;
-    Rules rules;
+    int size = 30;
 
     inline bool checkCell(int i, int j, int k)
     {

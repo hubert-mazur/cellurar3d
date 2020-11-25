@@ -28,7 +28,6 @@ void initOpenGL()
     glEnable(GL_LIGHT0);
     glEnable(GL_NORMALIZE);
     glEnable(GL_COLOR_MATERIAL);
-    shader.loadFromFile("shader.vert", "shader.frag");
 }
 
 void drawScene()
@@ -49,12 +48,12 @@ void drawScene()
     {
         for (int j = 0; j < 2; j++)
         {
-            glVertex3f(-1 + 2 * (i ^ j), -1 + 2 * j, -1);
-            glVertex3f(-1 + 2 * (i ^ j), -1 + 2 * j, 1);
-            glVertex3f(-1, -1 + 2 * (i ^ j), -1 + 2 * j);
-            glVertex3f(1, -1 + 2 * (i ^ j), -1 + 2 * j);
-            glVertex3f(-1 + 2 * (i ^ j), -1, -1 + 2 * j);
-            glVertex3f(-1 + 2 * (i ^ j), 1, -1 + 2 * j);
+            glVertex3f(-0.5 + 1 * (i ^ j), -0.5 + 1 * j, -0.5);
+            glVertex3f(-0.5 + 1 * (i ^ j), -0.5 + 1 * j, 0.5);
+            glVertex3f(-0.5, -0.5 + 1 * (i ^ j), -0.5 + 1 * j);
+            glVertex3f(0.5, -0.5 + 1 * (i ^ j), -0.5 + 1 * j);
+            glVertex3f(-0.5 + 1 * (i ^ j), -0.5, -0.5 + 1 * j);
+            glVertex3f(-0.5 + 1 * (i ^ j), 0.5, -0.5 + 1 * j);
         }
     }
 
@@ -62,52 +61,31 @@ void drawScene()
     gluQuadricDrawStyle(qobj, GLU_FILL);
     gluQuadricNormals(qobj, GLU_SMOOTH);
 
-    glEnable(GL_SHADER);
-    // sf::Shader::bind(&shader);
-    pthread_mutex_lock(&mutex);
-
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 30; i++)
     {
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 30; j++)
         {
-            for (int k = 0; k < 10; k++)
+            for (int k = 0; k < 30; k++)
             {
                 int state = cube->getCube()[i][j][k].getState();
+                int neighbours = cube->getCube()[i][j][k].getNeighboursCount();
+                float factor = 500.0/(cube->rules.getSurviveRule().getUpper() - cube->rules.getSurviveRule().getLower());
                 if (state == 0)
+                {
                     continue;
+                }
 
                 glPushMatrix();
-                glColor3f(1 + (state * 0.01), 1 - (state * 0.01), 0.0);
+                glColor3f((i*8.5)/255.0, (j*8.5)/255.0, (k*8.5)/255.0);
 
-                glTranslatef(float(i) / 20, float(j) / 20, float(k) / 20);
-                gluSphere(qobj, 0.02, 5, 2);
+                glTranslatef(float(i) / 30 - 0.25, float(j) / 30 - 0.5, float(k) / 30 -1);
+                gluSphere(qobj, 0.01, 10, 5);
                 glPopMatrix();
             }
         }
     }
 
-    pthread_mutex_unlock(&mutex);
-
-    // sf::Shader::bind(NULL);
-    glDisable(GL_SHADER);
     glEnd();
     glFlush();
 }
 
-void *Roll(void *)
-{
-    while (running)
-    {
-        Cube *tmp, *cube_backup;
-
-        tmp = cube->evolve();
-        cube_backup = cube;
-
-        pthread_mutex_lock(&mutex);
-        cube = tmp;
-        pthread_mutex_unlock(&mutex);
-
-        // cube_backup->~Cube();
-    }
-    return NULL;
-}

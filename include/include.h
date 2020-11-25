@@ -11,6 +11,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
+#include <time.h>
 
 #include "spherical.h"
 #include "cube.h"
@@ -20,7 +21,6 @@
 void reshapeScreen(sf::Vector2u screenSize);
 void initOpenGL();
 void drawScene();
-void* Roll(void*);
 
 
 #endif
