@@ -5,6 +5,7 @@ extern float fieldOfView;
 Cube *cube;
 
 bool running = true;
+bool light = true;
 
 int main()
 {
@@ -17,8 +18,11 @@ int main()
     sf::Vector2i mousePosition(0, 0);
     // sf::Clock clock;
     // float time = 0.0;
+    Range<> bornRule(7, 10);
+    Range<> suriveRule(10, 17);
+    Rules rules(bornRule, suriveRule, 0);
 
-    cube = new Cube(Rules(Range<>(7, 10), Range<>(10, 17), Range<>(6, 23), 0));
+    cube = new Cube(rules);
     cube->initRandomData();
 
     while (running)
@@ -74,11 +78,77 @@ int main()
             {
                 cube->initRandomData(false);
             }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L)
+            {
+                light = !light;
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Numpad1)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1) && sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+                {   
+                    cube->rules.getBornRule().setLower(cube->rules.getBornRule().getLower() + 1);
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1) && sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+                {
+                    cube->rules.getBornRule().setLower(cube->rules.getBornRule().getLower() - 1);
+                }
+                std::cout << "Born: <" << cube->rules.getBornRule().getLower()<< ", " << cube->rules.getBornRule().getUpper() << ">\n";
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Numpad2)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2) && sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+                {
+                    cube->rules.getBornRule().setUpper(cube->rules.getBornRule().getUpper() + 1);
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2) && sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+                {
+                    cube->rules.getBornRule().setUpper(cube->rules.getBornRule().getUpper() - 1);
+                }
+                std::cout << "Born: <" << cube->rules.getBornRule().getLower()<< ", " << cube->rules.getBornRule().getUpper() << ">\n";
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Numpad4)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4) && sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+                {
+                    cube->rules.getSurviveRule().setLower(cube->rules.getSurviveRule().getLower() + 1);
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4) && sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+                {
+                    cube->rules.getSurviveRule().setLower(cube->rules.getSurviveRule().getLower() - 1);
+                }
+                std::cout << "Survive: <" << cube->rules.getSurviveRule().getLower()<< ", " << cube->rules.getSurviveRule().getUpper() << ">\n";
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Numpad5)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5) && sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+                {
+                    cube->rules.getSurviveRule().setUpper(cube->rules.getSurviveRule().getUpper() + 1);
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5) && sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+                {
+                    cube->rules.getSurviveRule().setUpper(cube->rules.getSurviveRule().getUpper() - 1);
+                }
+                std::cout << "Survive: <" << cube->rules.getSurviveRule().getLower()<< ", " << cube->rules.getSurviveRule().getUpper() << ">\n";
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::N)
+            {
+                if (cube->rules.getNeighbourhoodRule() == 0)
+                    cube->rules.setNeighbourhood(1);
+                else
+                    cube->rules.setNeighbourhood(0);
+
+                std::cout<<"Neighbourhood: "<<(cube->rules.getNeighbourhoodRule() ? "von Neumann" : "Moore")<<std::endl;
+            }
         }
 
         drawScene();
         window.display();
-
         // time = clock.restart().asSeconds();
 
         Cube *tmp;

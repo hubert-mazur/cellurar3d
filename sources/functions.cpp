@@ -5,8 +5,7 @@ float fieldOfView = 45.0;
 extern Cube *cube;
 extern bool running;
 extern pthread_mutex_t mutex;
-
-sf::Shader shader;
+extern bool light;
 
 void reshapeScreen(sf::Vector2u screenSize)
 {
@@ -27,7 +26,11 @@ void initOpenGL()
     glEnable(GL_LIGHT0);
     glEnable(GL_NORMALIZE);
     glEnable(GL_COLOR_MATERIAL);
-}
+
+    GLfloat light_ambient_global[4] = {0.5, 0.4, 0.3, 1};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
+
+} //
 
 void drawScene()
 {
@@ -37,6 +40,9 @@ void drawScene()
     gluLookAt(camera.getX(), camera.getY(), camera.getZ(),
               0.0, 0.0, 0.0,
               north_of_camera.getX(), north_of_camera.getY(), north_of_camera.getZ());
+
+    if (light)
+        glEnable(GL_LIGHT0);
 
     // draw a box
     glBegin(GL_LINES);
@@ -55,33 +61,38 @@ void drawScene()
             glVertex3f(-0.5 + 1 * (i ^ j), 0.5, -0.5 + 1 * j);
         }
     }
+    glEnd();
 
     GLUquadricObj *qobj = gluNewQuadric();
     gluQuadricDrawStyle(qobj, GLU_FILL);
     gluQuadricNormals(qobj, GLU_SMOOTH);
+    int size = cube->getSize();
 
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < 30; j++)
+        for (int j = 0; j < size; j++)
         {
-            for (int k = 0; k < 30; k++)
+            for (int k = 0; k < size; k++)
             {
                 int state = cube->getCube()[i][j][k].getState();
                 int age = cube->getCube()[i][j][k].getAge();
 
-                if (state == 0)
+                if (!state)
                 {
                     continue;
                 }
 
                 glPushMatrix();
                 glColor3f((i * 8.5) / 255.0, (j * 8.5) / 255.0, (k * 8.5) / 255.0);
-                glTranslatef(float(i) / 30 - 0.5, float(j) / 30 - 0.5, float(k) / 30 - 0.5);
+                glTranslatef(static_cast<float>(i) / 30.0 - 0.5, static_cast<float>(j) / 30.0 - 0.5, static_cast<float>(k) / 30.0 - 0.5);
                 gluSphere(qobj, age / 10.0 * 0.015, 10, 5);
                 glPopMatrix();
             }
         }
     }
+
+    if (light)
+        glDisable(GL_LIGHT0);
 
     glEnd();
     glFlush();
