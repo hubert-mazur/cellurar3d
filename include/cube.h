@@ -22,6 +22,7 @@ class Cube
         sf::Vector3f getCoordinates() const { return this->cellCoordinates; }
         unsigned getState() const { return this->state; }
         int getNeighboursCount() const { return this->neighboursCount; }
+        int getAge() const { return this->age; }
 
         void setState(unsigned state) { this->state = state; }
         void setCoordinates(sf::Vector3f coordinates) { this->cellCoordinates = coordinates; }
@@ -36,13 +37,23 @@ class Cube
             this->cellCoordinates.y = object.cellCoordinates.y;
             this->cellCoordinates.z = object.cellCoordinates.z;
             this->state = object.state;
+            this->age = object.age;
             return *this;
         }
+
+        void grow()
+        {
+            if (this->age < 10)
+                this->age = this->age + 1;
+        }
+
+        void die() { this->age = 1; }
 
     private:
         sf::Vector3f cellCoordinates;
         unsigned state;
         int neighboursCount = 0;
+        int age = 1;
     };
 
 public:
@@ -120,10 +131,18 @@ public:
                     this->cube[i][j][k].setNeighboursCount(neighboursCount);
 
                     if (state == 0 && this->rules.getBornRule()(neighboursCount))
+                    {
                         evolutionaryCube->cube[i][j][k].setState(100);
+                        evolutionaryCube->cube[i][j][k].grow();
+                    }
                     else if (state != 0 && !this->rules.getSurviveRule()(neighboursCount))
                     {
                         evolutionaryCube->cube[i][j][k].setState(0);
+                        evolutionaryCube->cube[i][j][k].die();
+                    }
+                    else if (state != 0)
+                    {
+                        evolutionaryCube->cube[i][j][k].grow();
                     }
                 }
             }
@@ -132,15 +151,14 @@ public:
         return evolutionaryCube;
     }
 
-    void initRandomData()
+    void initRandomData(bool createMode = true)
     {
-        int begin = 0, end;
-        begin = random() % 30;
-
-        for (int rounds = 0; rounds < 30; rounds++)
+        for (int rounds = 0; rounds < 50; rounds++)
         {
+            int begin = 0, end;
+            begin = random() % 30;
             end = random() % (30 - begin) + begin;
-            std::cout << "From: " << begin << ", to: " << end << std::endl;
+            // std::cout << "From: " << begin << ", to: " << end << std::endl;
             for (int i = begin; i < end; i++)
             {
                 begin = random() % 30;
@@ -152,8 +170,16 @@ public:
                     end = random() % (30 - begin) + begin;
                     for (int k = begin; k < end; k++)
                     {
-                        if (random() % 100 < 20)
+                        if (!createMode)
+                        {
+                            this->cube[i][j][k].setState(0);
+                            this->cube[i][j][k].die();
+                        }
+                        if (random() % 100 < 20 && createMode)
+                        {
                             this->cube[i][j][k].setState(100);
+                            this->cube[i][j][k].grow();
+                        }
                     }
                 }
             }

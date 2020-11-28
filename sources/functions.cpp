@@ -21,7 +21,6 @@ void reshapeScreen(sf::Vector2u screenSize)
 void initOpenGL()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    // glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -68,18 +67,17 @@ void drawScene()
             for (int k = 0; k < 30; k++)
             {
                 int state = cube->getCube()[i][j][k].getState();
-                int neighbours = cube->getCube()[i][j][k].getNeighboursCount();
-                float factor = 500.0/(cube->rules.getSurviveRule().getUpper() - cube->rules.getSurviveRule().getLower());
+                int age = cube->getCube()[i][j][k].getAge();
+
                 if (state == 0)
                 {
                     continue;
                 }
 
                 glPushMatrix();
-                glColor3f((i*8.5)/255.0, (j*8.5)/255.0, (k*8.5)/255.0);
-
-                glTranslatef(float(i) / 30 - 0.25, float(j) / 30 - 0.5, float(k) / 30 -1);
-                gluSphere(qobj, 0.01, 10, 5);
+                glColor3f((i * 8.5) / 255.0, (j * 8.5) / 255.0, (k * 8.5) / 255.0);
+                glTranslatef(float(i) / 30 - 0.5, float(j) / 30 - 0.5, float(k) / 30 - 0.5);
+                gluSphere(qobj, age / 10.0 * 0.015, 10, 5);
                 glPopMatrix();
             }
         }
@@ -88,4 +86,3 @@ void drawScene()
     glEnd();
     glFlush();
 }
-

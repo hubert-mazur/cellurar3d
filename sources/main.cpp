@@ -15,8 +15,10 @@ int main()
     reshapeScreen(window.getSize());
     initOpenGL();
     sf::Vector2i mousePosition(0, 0);
- 
-    cube = new Cube(Rules(Range<>(7, 10), Range<>(10, 16), Range<>(6, 23), 0));
+    // sf::Clock clock;
+    // float time = 0.0;
+
+    cube = new Cube(Rules(Range<>(7, 10), Range<>(10, 17), Range<>(6, 23), 0));
     cube->initRandomData();
 
     while (running)
@@ -62,15 +64,27 @@ int main()
                 fieldOfView -= static_cast<float>(event.mouseWheel.delta);
                 reshapeScreen(window.getSize());
             }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S)
+            {
+                cube->initRandomData();
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::D)
+            {
+                cube->initRandomData(false);
+            }
         }
 
         drawScene();
         window.display();
+
+        // time = clock.restart().asSeconds();
+
         Cube *tmp;
         tmp = cube;
         cube = cube->evolve();
-        tmp->~Cube();
-
+        delete tmp;
     }
     cube->~Cube();
 }
