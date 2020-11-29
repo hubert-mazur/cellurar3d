@@ -20,7 +20,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/SFML/cmake-modules/")
 
 find_package (SFML REQUIRED system window graphics network audio)
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
 
 include_directories(${SFML_INCLUDE_DIR})
 
@@ -38,7 +37,7 @@ add_executable(${OUTPUT_FILE_NAME} ${SOURCES})
 add_custom_target (run ./${OUTPUT_FILE_NAME} ${LAB_NUMBER})
 add_custom_target (memcheck @valgrind ./${OUTPUT_FILE_NAME})
 
-target_link_libraries(${OUTPUT_FILE_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} sfml-graphics sfml-window sfml-system )
+target_link_libraries(${OUTPUT_FILE_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} sfml-graphics sfml-window sfml-system -lpthread )
 ############################################################
 
 ############################################################

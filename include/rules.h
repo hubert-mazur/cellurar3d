@@ -9,24 +9,25 @@ enum Neighbourhood
     vonNeumann = 1
 };
 
+// class representing rules in simulation
 class Rules
 {
-
 public:
-    Rules(Range<int> born = Range<int>(13, 18), Range<int> survive = Range<int>(10, 20), Range<int> death = Range<int>(6, 22), int neighbourhood = 0) : born(born), survive(survive), death(death), neighbourhood(neighbourhood) {}
+    Rules(Range<int> born = Range<int>(13, 18), Range<int> survive = Range<int>(10, 20), int neighbourhood = 0) : born(born), survive(survive), neighbourhood(neighbourhood) {}
 
+    // setters
     void setBornRule(Range<> range) { this->born = range; }
     void setSurviveRule(Range<> range) { this->survive = survive; }
-    void setDeathRule(Range<> range) { this->death = death; }
+    void setNeighbourhood(int neighbourhood) { this->neighbourhood = neighbourhood; }
 
-    Range<> getBornRule() const { return this->born; }
-    Range<> getSurviveRule() const { return this->survive; }
-    Range<> getDeathRule() const { return this->death; }
-    
+    // getters
+    int getNeighbourhoodRule() const { return this->neighbourhood; }
+    Range<> &getBornRule() { return this->born; }
+    Range<> &getSurviveRule() { return this->survive; }
+
 private:
     Range<int> born;
     Range<int> survive;
-    Range<int> death;
 
     int neighbourhood;
 };
