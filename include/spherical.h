@@ -3,6 +3,7 @@
 
 #include <math.h>
 
+// class representing spherical coordinate system for camera movement
 class Spherical
 {
 

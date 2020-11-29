@@ -20,7 +20,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/SFML/cmake-modules/")
 
 find_package (SFML REQUIRED system window graphics network audio)
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
 
 include_directories(${SFML_INCLUDE_DIR})
 

@@ -7,6 +7,7 @@ extern bool running;
 extern pthread_mutex_t mutex;
 extern bool light;
 
+// change window size
 void reshapeScreen(sf::Vector2u screenSize)
 {
     glViewport(0, 0, static_cast<GLsizei>(screenSize.x), static_cast<GLsizei>(screenSize.y));
@@ -17,6 +18,7 @@ void reshapeScreen(sf::Vector2u screenSize)
     glLoadIdentity();
 }
 
+// init openGL functionalities
 void initOpenGL()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -32,6 +34,7 @@ void initOpenGL()
 
 } //
 
+// draw Scene with cube
 void drawScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
